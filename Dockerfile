@@ -15,5 +15,5 @@ RUN CGO_ENABLED=0 go build -o /bin/modoki-ssh-gateway
 
 FROM scratch
 COPY --from=build /bin/modoki-ssh-gateway /bin/modoki-ssh-gateway
-ENTRYPOINT ["/bin/modoki"]
+ENTRYPOINT ["/bin/modoki-ssh-gateway"]
 CMD ["--help"]
