@@ -38,6 +38,12 @@ type adaptersType struct {
 func main() {
 	flag.Parse()
 
+	if *help {
+		flag.Usage()
+
+		return
+	}
+
 	var adapters adaptersType
 	var err error
 
