@@ -67,7 +67,7 @@ func main() {
 
 	listener, err := net.Listen("tcp", *addr)
 	if err != nil {
-		log.Fatalf("Failed to listen on %s (%s)", *addr, err)
+		log.Fatalf("Failed to listen on %s (%v)", *addr, err)
 	}
 
 	config := &ssh.ServerConfig{
@@ -87,21 +87,27 @@ func main() {
 				rows, err = adapters.db.Query("SELECT id, cid, defaultShell, uid FROM containers WHERE id=?", id)
 
 				if err != nil {
-					return nil, fmt.Errorf("internal server error: %s", err)
+					return nil, fmt.Errorf("internal server error: %v", err)
 				}
 			} else {
 				rows, err = adapters.db.Query("SELECT id, cid, defaultShell, uid FROM containers WHERE cid=?", c.User())
 
 				if err != nil {
-					return nil, fmt.Errorf("internal server error: %s", err)
+					return nil, fmt.Errorf("internal server error: %v", err)
 				}
 				defer rows.Close()
 			}
 			defer rows.Close()
 
-			rows.Next()
 			if err := rows.Scan(&id, &cid, &defaultShell, &uid); err != nil {
-				return nil, fmt.Errorf("internal server error: %s", err)
+				rows.Close()
+				return nil, fmt.Errorf("internal server error: %v", err)
+			}
+			rows.Close()
+
+			var keys []string
+			if err := adapters.db.Select(&keys, "SELECT key FROM authorizedKeys WHERE uid=?", uid); err != nil {
+				return nil, fmt.Errorf("DB error: %v", err)
 			}
 
 			perm := &ssh.Permissions{
@@ -113,7 +119,14 @@ func main() {
 				},
 			}
 
-			return perm, nil
+			pubStr := string(pubKey.Marshal())
+			for i := range keys {
+				if keys[i] == pubStr {
+					return perm, nil
+				}
+			}
+
+			return nil, fmt.Errorf("Permission denied(public key)")
 		},
 	}
 
@@ -132,7 +145,7 @@ func main() {
 	for {
 		tcpConn, err := listener.Accept()
 		if err != nil {
-			log.Printf("Failed to accept incoming connection (%s)", err)
+			log.Printf("Failed to accept incoming connection (%v)", err)
 			continue
 		}
 
@@ -142,4 +155,9 @@ func main() {
 
 		go cw.run(tcpConn, config)
 	}
+}
+
+type authorizedKey struct {
+	Key   string
+	Label string
 }
