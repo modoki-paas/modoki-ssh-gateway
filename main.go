@@ -106,7 +106,7 @@ func main() {
 			rows.Close()
 
 			var keys []string
-			if err := adapters.db.Select(&keys, "SELECT key FROM authorizedKeys WHERE uid=?", uid); err != nil {
+			if err := adapters.db.Select(&keys, "SELECT `key` FROM authorizedKeys WHERE uid=?", uid); err != nil {
 				return nil, fmt.Errorf("DB error: %v", err)
 			}
 
