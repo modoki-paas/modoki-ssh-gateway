@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/subtle"
 	"database/sql"
 	"errors"
 	"flag"
@@ -123,9 +124,16 @@ func main() {
 				},
 			}
 
-			pubStr := string(pubKey.Marshal())
 			for i := range keys {
-				if keys[i] == pubStr {
+				key, _, _, _, err := ssh.ParseAuthorizedKey([]byte(keys[i]))
+
+				if err != nil {
+					continue
+				}
+
+				a := key.Marshal()
+				b := pubKey.Marshal()
+				if len(a) == len(b) && subtle.ConstantTimeCompare(a, b) == 1 {
 					return perm, nil
 				}
 			}
