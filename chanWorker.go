@@ -100,10 +100,12 @@ func (c *connWorker) handleSession(newChannel ssh.NewChannel) {
 	var size ttySize
 
 	go func() {
+		defer ch.Close()
 		for req := range requests {
 			log.Println(pp.Sprint(req))
 
 			errorReply := func(err error) {
+				log.Println("error: ", err)
 				ch.Write([]byte(err.Error()))
 				if req.WantReply {
 					req.Reply(false, nil)
