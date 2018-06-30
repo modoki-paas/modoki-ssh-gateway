@@ -98,6 +98,7 @@ func main() {
 				defer rows.Close()
 			}
 			defer rows.Close()
+			rows.Next()
 
 			if err := rows.Scan(&id, &cid, &defaultShell, &uid); err != nil {
 				rows.Close()
