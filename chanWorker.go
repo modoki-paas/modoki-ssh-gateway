@@ -66,7 +66,7 @@ func (c *connWorker) initExec(ctx context.Context, ch ssh.Channel, execConfig ty
 
 	if execConfig.Tty {
 		if err := c.resizeTty(ctx, execID, size); err != nil {
-			return "", err
+			//return "", err
 		}
 	}
 
