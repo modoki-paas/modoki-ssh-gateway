@@ -64,8 +64,10 @@ func (c *connWorker) initExec(ctx context.Context, ch ssh.Channel, execConfig ty
 		resp.Conn.Close()
 	}()
 
-	if err := c.resizeTty(ctx, execID, size); err != nil {
-		return "", err
+	if execConfig.Tty {
+		if err := c.resizeTty(ctx, execID, size); err != nil {
+			return "", err
+		}
 	}
 
 	return execID, nil
@@ -187,6 +189,7 @@ func (c *connWorker) handleSession(newChannel ssh.NewChannel) {
 				termLen := req.Payload[3]
 				w, h := parseDims(req.Payload[termLen+4:])
 
+				execConfig.Tty = true
 				size.w = uint(w)
 				size.h = uint(h)
 
