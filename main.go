@@ -90,15 +90,18 @@ func main() {
 					return nil, fmt.Errorf("internal server error: %v", err)
 				}
 			} else {
-				rows, err = adapters.db.Query("SELECT id, cid, defaultShell, uid FROM containers WHERE cid=?", c.User())
+				rows, err = adapters.db.Query("SELECT id, cid, defaultShell, uid FROM containers WHERE name=?", c.User())
 
 				if err != nil {
 					return nil, fmt.Errorf("internal server error: %v", err)
 				}
-				defer rows.Close()
 			}
-			defer rows.Close()
-			rows.Next()
+
+			if !rows.Next() {
+				rows.Close()
+
+				return nil, fmt.Errorf("not found")
+			}
 
 			if err := rows.Scan(&id, &cid, &defaultShell, &uid); err != nil {
 				rows.Close()
