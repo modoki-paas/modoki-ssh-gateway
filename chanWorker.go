@@ -112,14 +112,14 @@ func (c *connWorker) handleSession(newChannel ssh.NewChannel) {
 
 			switch req.Type {
 			case "env":
+
+				var key, val string
+
 				if len(req.Payload) < 4 {
 					errorReply(errors.New("Invalid env format"))
 					return
 				}
-
-				var key, val string
-
-				if l := binary.BigEndian.Uint32(req.Payload[:4]); uint32(len(req.Payload)) <= 4+l {
+				if l := binary.BigEndian.Uint32(req.Payload[:4]); uint32(len(req.Payload)) < 4+l {
 					errorReply(errors.New("Invalid env format"))
 					return
 				} else {
@@ -127,7 +127,11 @@ func (c *connWorker) handleSession(newChannel ssh.NewChannel) {
 					req.Payload = req.Payload[4+l:]
 				}
 
-				if l := binary.BigEndian.Uint32(req.Payload[:4]); uint32(len(req.Payload)) <= 4+l {
+				if len(req.Payload) < 4 {
+					errorReply(errors.New("Invalid env format"))
+					return
+				}
+				if l := binary.BigEndian.Uint32(req.Payload[:4]); uint32(len(req.Payload)) < 4+l {
 					errorReply(errors.New("Invalid env format"))
 					return
 				} else {
