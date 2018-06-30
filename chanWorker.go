@@ -103,6 +103,7 @@ func (c *connWorker) handleSession(newChannel ssh.NewChannel) {
 
 	go func() {
 		defer ch.Close()
+
 		for req := range requests {
 			log.Println(pp.Sprint(req))
 
@@ -169,7 +170,11 @@ func (c *connWorker) handleSession(newChannel ssh.NewChannel) {
 					req.Reply(false, nil)
 					continue
 				}
-				execConfig.Cmd = strings.Split(string(req.Payload), " ")
+				if len(req.Payload) < 4 {
+					errorReply(errors.New("invalid payload format"))
+					return
+				}
+				execConfig.Cmd = strings.Split(string(req.Payload[4:]), " ")
 
 				execID, err = c.initExec(context.Background(), ch, execConfig, size)
 
