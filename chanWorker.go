@@ -9,12 +9,9 @@ import (
 	"log"
 	"strings"
 
-	"github.com/docker/docker/pkg/stdcopy"
-
 	"github.com/docker/docker/api/types"
-
+	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/k0kubun/pp"
-
 	"golang.org/x/crypto/ssh"
 )
 

@@ -104,11 +104,14 @@ func main() {
 				return nil, fmt.Errorf("not found")
 			}
 
-			if err := rows.Scan(&id, &cid, &defaultShell, &uid); err != nil {
+			var nullableDefaultShell sql.NullString
+			if err := rows.Scan(&id, &cid, &nullableDefaultShell, &uid); err != nil {
 				rows.Close()
 				return nil, fmt.Errorf("internal server error: %v", err)
 			}
 			rows.Close()
+
+			defaultShell = nullableDefaultShell.String
 
 			var keys []string
 			if err := adapters.db.Select(&keys, "SELECT `key` FROM authorizedKeys WHERE uid=?", uid); err != nil {
