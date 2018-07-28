@@ -12,7 +12,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/cs3238-tsuzu/modoki/consul_traefik"
+	"github.com/modoki-paas/modoki/consul_traefik"
 	"github.com/docker/docker/client"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"

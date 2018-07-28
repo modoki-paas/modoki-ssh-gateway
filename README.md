@@ -5,7 +5,7 @@
  https://opensource.org/licenses/MIT
 -->
 
-# SSH Gateway for [modoki](https://github.com/cs3238-tsuzu/modoki)
+# SSH Gateway for [modoki](https://github.com/modoki-paas/modoki)
 - Connect to the inside container via SSH protocol
 
 ## Status

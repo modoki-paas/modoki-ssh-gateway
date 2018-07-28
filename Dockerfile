@@ -6,11 +6,11 @@
 FROM golang:1.10-alpine as build
 
 RUN apk add --no-cache git
-RUN go get -v github.com/cs3238-tsuzu/modoki-ssh-gateway
+RUN go get -v github.com/modoki-paas/modoki-ssh-gateway
 
-WORKDIR /go/src/github.com/cs3238-tsuzu/modoki-ssh-gateway
+WORKDIR /go/src/github.com/modoki-paas/modoki-ssh-gateway
 
-COPY . /go/src/github.com/cs3238-tsuzu/modoki-ssh-gateway
+COPY . /go/src/github.com/modoki-paas/modoki-ssh-gateway
 RUN go get -v .
 RUN CGO_ENABLED=0 go build -o /bin/modoki-ssh-gateway
 
