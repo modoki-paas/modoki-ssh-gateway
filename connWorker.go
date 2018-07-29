@@ -15,7 +15,7 @@ type connWorker struct {
 
 	cid          string
 	id           int
-	uid          int
+	uid          string
 	defaultShell string
 }
 
@@ -29,7 +29,7 @@ func (c *connWorker) run(tcpConn net.Conn, config *ssh.ServerConfig) {
 
 	c.id, _ = strconv.Atoi(sshConn.Permissions.CriticalOptions[permIDKey])
 	c.cid = sshConn.Permissions.CriticalOptions[permCIDKey]
-	c.uid, _ = strconv.Atoi(sshConn.Permissions.CriticalOptions[permUIDKey])
+	c.uid, _ = sshConn.Permissions.CriticalOptions[permUIDKey]
 	c.defaultShell = sshConn.Permissions.CriticalOptions[permShellKey]
 
 	if c.defaultShell == "" {

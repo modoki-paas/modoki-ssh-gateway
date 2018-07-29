@@ -12,10 +12,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/modoki-paas/modoki/consul_traefik"
 	"github.com/docker/docker/client"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
+	"github.com/modoki-paas/modoki/consul_traefik"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -73,8 +73,8 @@ func main() {
 
 	config := &ssh.ServerConfig{
 		PublicKeyCallback: func(c ssh.ConnMetadata, pubKey ssh.PublicKey) (*ssh.Permissions, error) {
-			var id, uid int
-			var cid, defaultShell string
+			var id int
+			var uid, cid, defaultShell string
 			var err error
 
 			var rows *sql.Rows
@@ -122,7 +122,7 @@ func main() {
 				CriticalOptions: map[string]string{
 					permCIDKey:   cid,
 					permIDKey:    strconv.Itoa(id),
-					permUIDKey:   strconv.Itoa(uid),
+					permUIDKey:   uid,
 					permShellKey: defaultShell,
 				},
 			}
