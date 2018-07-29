@@ -6,5 +6,5 @@ const (
 	permUIDKey   = "containers.uid"
 	permShellKey = "containers.defaultShell"
 
-	defaultShellKVFormat = "modoki/users/%d/defaultShell"
+	defaultShellKVFormat = "modoki/users/%s/defaultShell"
 )
